@@ -1,0 +1,30 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>EditMovie</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+    <ion-list>
+        <ion-item>
+          <ion-label floating>Movie Name</ion-label>
+          <ion-input type="text" [(ngModel)]="name"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label floating>Length</ion-label>
+            <ion-input type="text" [(ngModel)]="length"></ion-input>
+          </ion-item>
+          <ion-item>
+              <ion-label floating>Description</ion-label>
+              <ion-input type="text" [(ngModel)]="description"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label floating>IMAGE</ion-label>
+                <ion-input type="text" [(ngModel)]="image"></ion-input>
+              </ion-item>
+              <button ion-button full (click)="save()" >Save</button>
+      </ion-list>
+</ion-content>
