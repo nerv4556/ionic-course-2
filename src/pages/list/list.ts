@@ -1,3 +1,4 @@
+import { SetNotificationPage } from './../set-notification/set-notification';
 import { ChartPage } from './../chart/chart';
 import { ToastController } from 'ionic-angular/components/toast/toast-controller';
 import { AddMoviePage } from './../add-movie/add-movie';
@@ -8,6 +9,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { LoadingController } from 'ionic-angular/components/loading/loading-controller';
 import Basepage from '../base';
 import { EditMoviePage } from '../edit-movie/edit-movie';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
 @Component({
   selector: 'page-list',
@@ -16,6 +18,7 @@ import { EditMoviePage } from '../edit-movie/edit-movie';
 export class ListPage extends Basepage {
 
   items = []
+  results =[]
 
   uid = ''
   constructor(
@@ -24,7 +27,8 @@ export class ListPage extends Basepage {
     public firebaseFirestore: AngularFirestore,
     public firebaseAuth: AngularFireAuth,
     public loadingCtrl:LoadingController,
-    public toastCtrl:ToastController
+    public toastCtrl:ToastController,
+    public barcodeScanner: BarcodeScanner
   ) {
     super(toastCtrl,loadingCtrl)
   }
@@ -46,6 +50,8 @@ export class ListPage extends Basepage {
             data : action.payload.doc.data()
           })
       })
+
+      this.results = this.items
       this.hideLoading()
       },
     (error) => {
@@ -62,6 +68,14 @@ export class ListPage extends Basepage {
   navigateChart(){
     this.navCtrl.push(ChartPage)
   }
+
+  navigateNotification(movie){
+    this.navCtrl.push(SetNotificationPage,{
+      movie : movie
+    })
+    
+  }
+
 delete(movieId){
   this.showLoading("Loading....")
   this.firebaseFirestore
@@ -83,5 +97,40 @@ edit(movieId){
   this.navCtrl.push(EditMoviePage,{
     id : movieId
   })
+}
+getItem(event){
+  let val = event.target.value
+
+  if(val == ''){
+    this.results = this.items
+  }
+
+  if (val && val.trim() != ''){
+    this.results = this.items.filter((item) => {
+      return(item.data.name.toLowerCase().indexOf(val.toLowerCase()) > -1)
+    })
+  }
+}
+
+getItemFromBarcode(code){
+
+
+  if(code == ''){
+    this.results = this.items
+  }
+
+  if (code && code.trim() != ''){
+    this.results = this.items.filter((item) => {
+      return(item.data.name.toLowerCase().indexOf(code.toLowerCase()) > -1)
+    })
+  }
+}
+
+scanBarCode(){
+  this.barcodeScanner.scan().then((barcodeData) => {
+    this.getItemFromBarcode(barcodeData.text)
+   }, (err) => {
+       // An error occurred
+   });
 }
 }

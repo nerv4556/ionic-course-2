@@ -3,6 +3,9 @@
   <ion-navbar>
     <ion-title>List</ion-title>
     <ion-buttons end>
+        <button ion-button icon-right (click)="scanBarCode()">
+            <ion-icon name="barcode"></ion-icon>
+          </button>
         <button ion-button icon-right (click)="navigateChart()">
           <ion-icon name="stats"></ion-icon>
         </button>
@@ -13,9 +16,10 @@
 
 
 <ion-content padding>
+  <ion-searchbar (ionInput)="getItem($event)"></ion-searchbar>
   <ion-list>
     
-    <ion-item-sliding *ngFor="let movie of items">
+    <ion-item-sliding *ngFor="let movie of results">
         <ion-item >
             <ion-avatar item-start>
               <img src="{{movie.data.img}}">
@@ -24,6 +28,8 @@
             <p>Length : {{movie.data.length}} min.</p>
           </ion-item>
           <ion-item-options side="right">
+            <button ion-button color="secondary" (click)="navigateNotification(movie)">
+                <ion-icon name="clock"></ion-icon>Notify</button>
               <button ion-button (click)="edit(movie.id)" >
                   <ion-icon name="create"></ion-icon>Edit</button>
               <button ion-button (click)="delete(movie.id)" color="danger" > 
